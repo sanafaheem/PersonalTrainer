@@ -1,4 +1,4 @@
-namespace PersonalTrainer.API.Models;
+namespace PersonalTrainer.API.Models.DTO;
 
 public class LoginRequest
 {
