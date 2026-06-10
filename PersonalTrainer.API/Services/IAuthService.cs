@@ -8,4 +8,6 @@ public interface IAuthService
     Task<AuthResponse?> LoginAsync(LoginRequest request);
     Task<AuthResponse?> RefreshAsync(string refreshToken);
     Task<bool> RevokeAsync(string refreshToken);
+    Task<IEnumerable<object>> GetAllUsersAsync();
+    Task<bool> ResetPasswordAsync(ResetPasswordRequest request);
 }
