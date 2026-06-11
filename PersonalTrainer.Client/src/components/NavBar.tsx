@@ -1,5 +1,5 @@
 import { Navbar, Nav, Container, Button } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function NavBar() {
@@ -14,15 +14,15 @@ export default function NavBar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Personal Trainer</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">Personal Trainer</Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           <Nav className="ms-auto align-items-center">
             {isLoggedIn ? (
               <>
-                <Navbar.Text className="me-3">
+                <Nav.Link as={Link} to="/profile" className="text-white me-3">
                   {user?.firstName} {user?.lastName}
-                </Navbar.Text>
+                </Nav.Link>
                 <Button variant="outline-light" size="sm" onClick={handleLogout}>
                   Logout
                 </Button>
