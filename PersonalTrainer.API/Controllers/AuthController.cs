@@ -54,4 +54,21 @@ public class AuthController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _authService.GetAllUsersAsync();
+        return Ok(users);
+    }
+
+    [HttpPatch("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+    {
+        var success = await _authService.ResetPasswordAsync(request);
+        if (!success)
+            return NotFound("User with this email does not exist.");
+
+        return NoContent();
+    }
 }

@@ -78,6 +78,35 @@ public class AuthService : IAuthService
         };
     }
 
+    public async Task<bool> ResetPasswordAsync(ResetPasswordRequest request)
+    {
+        var user = await _userManager.FindByEmailAsync(request.Email);
+        if (user == null)
+            return false;
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+
+        if (!result.Succeeded)
+            throw new InvalidOperationException(
+                string.Join("; ", result.Errors.Select(e => e.Description)));
+
+        return true;
+    }
+
+    public async Task<IEnumerable<object>> GetAllUsersAsync()
+    {
+        return await _userManager.Users
+            .Select(u => new
+            {
+                u.Id,
+                u.FirstName,
+                u.LastName,
+                u.Email
+            })
+            .ToListAsync<object>();
+    }
+
     public async Task<bool> RevokeAsync(string refreshToken)
     {
         var token = await _context.RefreshTokens
