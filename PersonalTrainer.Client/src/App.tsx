@@ -3,11 +3,14 @@ import Layout from './components/Layout';
 import LoginPage from './pages/LoginPage';
 import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
+import CreateWorkoutPage from './pages/CreateWorkoutPage';
+import WorkoutPlanPage from './pages/WorkoutPlanPage';
 import type React from 'react';
 import { useAuth } from './context/AuthContext';
 
 function ProtectedRoute ({children}:{children:React.ReactNode}){
-  const {isLoggedIn}=useAuth();
+  const {isLoggedIn, isInitializing}=useAuth();
+  if (isInitializing) return null;
   return isLoggedIn?children:<Navigate to="/login" />;
 }
 
@@ -19,6 +22,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
+          <Route path="/workout" element={<CreateWorkoutPage/>}/>
+          <Route path="/workout/plan" element={<WorkoutPlanPage/>}/>
         </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

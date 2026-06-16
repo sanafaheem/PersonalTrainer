@@ -52,4 +52,13 @@ export const logout = () => {
 export const isAuthenticated = (): boolean =>
   !!localStorage.getItem('pt_token');
 
+export const saveUser = (user: { firstName: string; lastName: string; email: string }) =>
+  localStorage.setItem('pt_user', JSON.stringify(user));
+
+export const getUser = () => {
+  const user = localStorage.getItem('pt_user');
+  return user ? JSON.parse(user) : null;
+};
+
+export const removeUser = () => localStorage.removeItem('pt_user');
 

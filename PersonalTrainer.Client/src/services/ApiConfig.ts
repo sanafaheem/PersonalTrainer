@@ -7,6 +7,9 @@ export const AUTH_URL = `${BASE_URL}/auth`;
 export const PROFILE_URL = `${BASE_URL}/profile`;
 export const WORKOUT_URL = `${BASE_URL}/workout`;
 export const SESSION_URL = `${BASE_URL}/session`;
+export const WORKOUT_OPTIONS_URL = `${BASE_URL}/workoutoptions`;
+export const USER_WORKOUT_PROFILE_URL = `${BASE_URL}/UserWorkoutProfile`;
+export const GENERATE_WORKOUT_URL = `${USER_WORKOUT_PROFILE_URL}/generate`;
 
 // Axios instance with base URL and auth header
 export const apiClient = axios.create({

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type{ReactNode} from 'react';
-import { saveToken, saveRefreshToken, logout as logoutService, isAuthenticated, getToken } from '../services/authService';
+import { saveToken, saveRefreshToken, logout as logoutService, isAuthenticated, saveUser, getUser, removeUser } from '../services/authService';
 import type { AuthResponse } from '../services/authService';
 
 
@@ -15,6 +15,7 @@ interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   isLoggedIn: boolean;
+  isInitializing: boolean;
   login: (data: AuthResponse) => void;
   logout: () => void;
 }
@@ -23,41 +24,35 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [isInitializing, setIsInitializing] = useState(true);
 
-  // On app load check if user is already logged in
+  // On app load restore user from localStorage if token is still valid
   useEffect(() => {
     if (isAuthenticated()) {
-      const token = getToken();
-      // Decode token to get user info
-      if (token) {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUser({
-          firstName: payload.firstName || '',
-          lastName: payload.lastName || '',
-          email: payload.email
-        });
-      }
+      const saved = getUser();
+      if (saved) setUser(saved);
     }
+    setIsInitializing(false);
   }, []);
 
   const login = (data: AuthResponse) => {
     saveToken(data.token);
     saveRefreshToken(data.refreshToken);
-    setUser({
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email
-    });
+    const authUser = { firstName: data.firstName, lastName: data.lastName, email: data.email };
+    saveUser(authUser);
+    setUser(authUser);
   };
 
   const logout =()=>{
     logoutService();
+    removeUser();
     setUser(null);
   };
    return (
     <AuthContext.Provider value={{
       user,
       isLoggedIn: !!user,
+      isInitializing,
       login,
       logout
     }}>

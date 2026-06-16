@@ -4,6 +4,8 @@ import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { login } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
+import { useLocation } from 'react-router-dom';
+
 
 export default function LoginPage(){
   const [email, setEmail] = useState('');
@@ -13,6 +15,8 @@ export default function LoginPage(){
 
    const { login: setAuthUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const message = location.state?.message;
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -48,7 +52,8 @@ export default function LoginPage(){
           <p className="text-muted mb-4">Sign in to your Personal Trainer account</p>
 
           {error && <Alert variant="danger">{error}</Alert>}
-
+          {message && <Alert variant="info">{message}</Alert>}
+          
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>

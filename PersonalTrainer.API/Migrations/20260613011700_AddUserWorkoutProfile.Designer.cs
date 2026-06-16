@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PersonalTrainer.API.Data;
 
@@ -11,9 +12,11 @@ using PersonalTrainer.API.Data;
 namespace PersonalTrainer.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260613011700_AddUserWorkoutProfile")]
+    partial class AddUserWorkoutProfile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,56 +229,6 @@ namespace PersonalTrainer.API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("PersonalTrainer.API.Models.Exercise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Difficulty")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DurationSeconds")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EncouragementMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Instructions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MusclesTargeted")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Reps")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestSeconds")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Sets")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkoutPlanId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkoutPlanId");
-
-                    b.ToTable("Exercises");
-                });
-
             modelBuilder.Entity("PersonalTrainer.API.Models.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -355,47 +308,6 @@ namespace PersonalTrainer.API.Migrations
                     b.ToTable("UserWorkoutProfiles");
                 });
 
-            modelBuilder.Entity("PersonalTrainer.API.Models.WorkoutPlan", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CompletionMessage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CooldownCue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("MotivationalIntro")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserWorkoutProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("WarmupCue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserWorkoutProfileId");
-
-                    b.ToTable("WorkoutPlans");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -447,17 +359,6 @@ namespace PersonalTrainer.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PersonalTrainer.API.Models.Exercise", b =>
-                {
-                    b.HasOne("PersonalTrainer.API.Models.WorkoutPlan", "WorkoutPlan")
-                        .WithMany("Exercises")
-                        .HasForeignKey("WorkoutPlanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("WorkoutPlan");
-                });
-
             modelBuilder.Entity("PersonalTrainer.API.Models.RefreshToken", b =>
                 {
                     b.HasOne("PersonalTrainer.API.Models.AppUser", "AppUser")
@@ -478,25 +379,9 @@ namespace PersonalTrainer.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PersonalTrainer.API.Models.WorkoutPlan", b =>
-                {
-                    b.HasOne("PersonalTrainer.API.Models.UserWorkoutProfile", "UserWorkoutProfile")
-                        .WithMany()
-                        .HasForeignKey("UserWorkoutProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserWorkoutProfile");
-                });
-
             modelBuilder.Entity("PersonalTrainer.API.Models.AppUser", b =>
                 {
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("PersonalTrainer.API.Models.WorkoutPlan", b =>
-                {
-                    b.Navigation("Exercises");
                 });
 #pragma warning restore 612, 618
         }
