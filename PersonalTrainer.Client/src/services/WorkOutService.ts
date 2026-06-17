@@ -1,7 +1,6 @@
 import { apiClient, GENERATE_WORKOUT_URL } from './ApiConfig';
 
 export interface GenerateWorkoutRequest {
-  userId?: string;
   firstName: string;
   age: number;
   fitnessLevel: string;

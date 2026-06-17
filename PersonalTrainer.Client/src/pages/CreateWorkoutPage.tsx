@@ -50,7 +50,8 @@ export default function CreateWorkoutPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const { isLoggedIn, user } = useAuth();
   const [form, setForm] = useState<WorkoutForm>({ ...initialForm, firstName: user?.firstName || '' });
-
+  const [loading, setLoading] = useState(false);
+  const [generateError, setGenerateError] = useState<string | null>(null);
   useEffect(() => {
     getWorkoutOptions().then(setWorkoutOptions);
   }, []);
@@ -108,17 +109,26 @@ export default function CreateWorkoutPage() {
       return;
     }
     setErrors({});
-    const plan = await generateWorkout({
-      firstName: form.firstName,
-      age: form.age,
-      fitnessLevel: form.fitnessLevel,
-      goal: form.goal,
-      focusArea: form.focusArea,
-      durationMinutes: form.durationMinutes,
-      equipment: form.equipment,
-      healthLimitations: form.healthLimitations || undefined,
-    });
-    navigate('/workout/plan', { state: { plan } });
+    setGenerateError(null);
+    setLoading(true);
+    try {
+      const plan = await generateWorkout({
+        firstName: form.firstName,
+        age: form.age,
+        fitnessLevel: form.fitnessLevel,
+        goal: form.goal,
+        focusArea: form.focusArea,
+        durationMinutes: form.durationMinutes,
+        equipment: form.equipment,
+        healthLimitations: form.healthLimitations || undefined,
+      });
+      sessionStorage.setItem('workoutPlan', JSON.stringify(plan));
+      navigate('/workout/plan');
+    } catch {
+      setGenerateError('Something went wrong generating your workout. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateForm = (fields: Partial<WorkoutForm>) => {
@@ -146,6 +156,9 @@ export default function CreateWorkoutPage() {
 
           {renderStep()}
 
+          {generateError && (
+            <p className="text-danger small mt-3 mb-0">{generateError}</p>
+          )}
           <div className="d-flex justify-content-between mt-4">
             <Button type="button" variant="outline-secondary" onClick={handleBack} disabled={step === 1}>
               Back
@@ -155,8 +168,8 @@ export default function CreateWorkoutPage() {
                 Next
               </Button>
             ) : (
-              <Button type="button" variant="dark" onClick={handleGenerate}>
-                Generate
+              <Button type="button" variant="dark" onClick={handleGenerate} disabled ={loading}>
+                {loading?"Generating":"Generate"}
               </Button>
             )}
           </div>
