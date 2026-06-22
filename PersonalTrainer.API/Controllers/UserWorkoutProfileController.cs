@@ -40,7 +40,7 @@ public class UserWorkoutProfileController(
                 {
                     Name = "Push-Ups",
                     Instructions = "Start in a high plank position. Lower your chest to the floor, then push back up. Keep your core tight throughout.",
-                    DurationSeconds = 0,
+                    DurationSeconds = 40,
                     RestSeconds = 30,
                     Sets = 3,
                     Reps = 12,
@@ -52,7 +52,7 @@ public class UserWorkoutProfileController(
                 {
                     Name = "Bodyweight Squats",
                     Instructions = "Stand with feet shoulder-width apart. Lower your hips until thighs are parallel to the floor, then drive back up.",
-                    DurationSeconds = 0,
+                    DurationSeconds = 50,
                     RestSeconds = 30,
                     Sets = 3,
                     Reps = 15,

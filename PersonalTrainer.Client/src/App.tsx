@@ -5,6 +5,8 @@ import ProfilePage from './pages/ProfilePage';
 import HomePage from './pages/HomePage';
 import CreateWorkoutPage from './pages/CreateWorkoutPage';
 import WorkoutPlanPage from './pages/WorkoutPlanPage';
+import SessionPage from './pages/SessionPage';
+
 import type React from 'react';
 import { useAuth } from './context/AuthContext';
 
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
           <Route path="/workout" element={<CreateWorkoutPage/>}/>
           <Route path="/workout/plan" element={<WorkoutPlanPage/>}/>
+          <Route path="/session" element={<SessionPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
