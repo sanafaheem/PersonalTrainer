@@ -39,10 +39,9 @@ export default function WorkoutPlanPage() {
                   <p className="fw-semibold mb-1">{ex.name}</p>
                   <p className="text-muted small mb-2">{ex.instructions}</p>
                   <div className="d-flex gap-2 flex-wrap">
-                    {ex.sets && ex.reps ? (
+                    <Badge bg="dark">{ex.durationSeconds}s</Badge>
+                    {ex.sets && ex.reps && (
                       <Badge bg="dark">{ex.sets} sets × {ex.reps} reps</Badge>
-                    ) : (
-                      <Badge bg="dark">{ex.durationSeconds}s</Badge>
                     )}
                     <Badge bg="secondary">Rest {ex.restSeconds}s</Badge>
                     <Badge bg="light" text="dark" className="border">{ex.difficulty}</Badge>
@@ -71,7 +70,7 @@ export default function WorkoutPlanPage() {
         {/* Desktop buttons */}
         <div className="d-none d-md-flex justify-content-between mt-4">
           <Button variant="outline-dark" onClick={() => navigate('/workout')}>Create New Workout</Button>
-          <Button variant="dark">Start Workout</Button>
+          <Button variant="dark" onClick={() => navigate('/session')}>Start Workout</Button>
         </div>
       </Container>
 
@@ -84,7 +83,7 @@ export default function WorkoutPlanPage() {
         >
           Create New Workout
         </Button>
-        <Button variant="dark" className="flex-fill">
+        <Button variant="dark" className="flex-fill" onClick={()=>navigate("/session")}>
           Start Workout
         </Button>
       </div>
