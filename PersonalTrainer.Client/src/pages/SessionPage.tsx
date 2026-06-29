@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Card, ProgressBar, Button, Badge } from 'react-bootstrap';
 import type { WorkoutPlan } from '../services/WorkOutService';
+import { voiceService } from '../services/voiceService';
 
 export default function SessionPage() {
   const navigate = useNavigate();
@@ -12,19 +13,22 @@ export default function SessionPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(exercises[0]?.durationSeconds ?? 0);
   const [isResting, setIsResting] = useState(false);
+  const [voiceOn, setVoiceOn] = useState(true);
 
   const handleNext = useCallback(() => {
     setCurrentIndex(prev => prev + 1);
   }, []);
 
-  // Reset timer when exercise changes — single source of truth
-useEffect(() => {
-  const ex = exercises[currentIndex];
-  if (ex) {
-    setIsResting(false);
-    setTimeLeft(ex.durationSeconds);
-  }
-}, [currentIndex]);
+  // Reset timer and speak when exercise changes
+  useEffect(() => {
+    const ex = exercises[currentIndex];
+    if (ex) {
+      setIsResting(false);
+      setTimeLeft(ex.durationSeconds);
+      if (voiceOn) voiceService.speak(`${ex.name}. ${ex.encouragementMessage}`);
+    }
+    return () => voiceService.stop();
+  }, [currentIndex]);
 
 // Countdown only — no state changes here except timeLeft
 useEffect(() => {
@@ -35,7 +39,13 @@ useEffect(() => {
 
 // Handle timer hitting 0 — separate from countdown
 useEffect(() => {
-  if (timeLeft !== 0) return;
+  if (timeLeft !== 0) {
+    // Countdown warnings
+    if (voiceOn && !isResting && timeLeft === 5) voiceService.speak('5 seconds left, keep going!');
+    if (voiceOn && !isResting && timeLeft === 3) voiceService.speak('3');
+    if (voiceOn && !isResting && timeLeft === 2) voiceService.speak('2');
+    if (voiceOn && !isResting && timeLeft === 1) voiceService.speak('1');
+    return;}
   
   const ex = exercises[currentIndex];
   if (!ex) return;
@@ -43,6 +53,7 @@ useEffect(() => {
   if (!isResting && ex.restSeconds > 0) {
     setIsResting(true);
     setTimeLeft(ex.restSeconds);
+    if (voiceOn) voiceService.speak('Good work! Rest now.');
   } else {
     setIsResting(false);
     handleNext();
@@ -83,9 +94,21 @@ useEffect(() => {
   return (
     <Container className="py-5" style={{ maxWidth: '600px' }}>
       {/* Exercise progress */}
-      <div className="d-flex justify-content-between mb-1">
+      <div className="d-flex justify-content-between align-items-center mb-1">
         <small className="text-muted">Exercise {currentIndex + 1} of {exercises.length}</small>
-        <small className="text-muted">{exerciseProgress}%</small>
+        <div className="d-flex align-items-center gap-2">
+          <small className="text-muted">{exerciseProgress}%</small>
+          <Button
+            size="sm"
+            variant={voiceOn ? 'dark' : 'outline-secondary'}
+            onClick={() => {
+              if (voiceOn) voiceService.stop();
+              setVoiceOn(prev => !prev);
+            }}
+          >
+            {voiceOn ? '🔊' : '🔇'}
+          </Button>
+        </div>
       </div>
       <ProgressBar now={exerciseProgress} className="mb-4" style={{ height: '6px' }} />
 
