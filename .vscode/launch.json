@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "Launch API",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/PersonalTrainer.API/bin/Debug/net9.0/PersonalTrainer.API.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/PersonalTrainer.API",
+      "preLaunchTask": "build-api",
+      "stopAtEntry": false,
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:5202"
+      }
+    }
+  ]
+}
