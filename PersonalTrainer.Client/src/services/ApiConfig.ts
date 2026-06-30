@@ -10,7 +10,8 @@ export const SESSION_URL = `${BASE_URL}/session`;
 export const WORKOUT_OPTIONS_URL = `${BASE_URL}/workoutoptions`;
 export const USER_WORKOUT_PROFILE_URL = `${BASE_URL}/UserWorkoutProfile`;
 export const GENERATE_WORKOUT_URL = `${USER_WORKOUT_PROFILE_URL}/generate`;
-export const MY_PLANS_URL = `${USER_WORKOUT_PROFILE_URL}/my-plans`;
+export const MY_PLANS_URL  = `${USER_WORKOUT_PROFILE_URL}/my-plans`;
+export const PLANS_URL     = `${USER_WORKOUT_PROFILE_URL}/plans`;
 
 // Axios instance with base URL and auth header
 export const apiClient = axios.create({

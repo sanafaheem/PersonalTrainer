@@ -23,6 +23,15 @@ public class WorkoutPlanService(AppDbContext db) : IWorkoutPlanService
             .ToListAsync();
     }
 
+    public async Task<WorkoutPlanResponse?> GetByIdAsync(int planId)
+    {
+        var plan = await db.WorkoutPlans
+            .Include(p => p.Exercises)
+            .FirstOrDefaultAsync(p => p.Id == planId);
+
+        return plan is null ? null : ToResponse(plan);
+    }
+
     public async Task<WorkoutPlanResponse?> GetLatestByProfileIdAsync(int profileId)
     {
         var plan = await db.WorkoutPlans

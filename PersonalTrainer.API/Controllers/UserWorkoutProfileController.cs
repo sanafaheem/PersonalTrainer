@@ -20,6 +20,13 @@ public class UserWorkoutProfileController(
         return profile is null ? NotFound() : Ok(profile);
     }
 
+    [HttpGet("plans/{id:int}")]
+    public async Task<IActionResult> GetPlanById(int id)
+    {
+        var plan = await workoutPlanService.GetByIdAsync(id);
+        return plan is null ? NotFound() : Ok(plan);
+    }
+
     [HttpGet("my-plans")]
     public async Task<IActionResult> GetMyPlans()
     {
