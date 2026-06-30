@@ -1,4 +1,4 @@
-import { apiClient, GENERATE_WORKOUT_URL } from './ApiConfig';
+import { apiClient, GENERATE_WORKOUT_URL, MY_PLANS_URL } from './ApiConfig';
 
 export interface GenerateWorkoutRequest {
   firstName: string;
@@ -32,7 +32,20 @@ export interface WorkoutPlan {
   exercises: Exercise[];
 }
 
+export interface WorkoutPlanSummary {
+  id: number;
+  title: string;
+  motivationalIntro: string;
+  exerciseCount: number;
+  createdAt: string;
+}
+
 export async function generateWorkout(request: GenerateWorkoutRequest): Promise<WorkoutPlan> {
   const response = await apiClient.post<WorkoutPlan>(GENERATE_WORKOUT_URL, request);
+  return response.data;
+}
+
+export async function getMyPlans(): Promise<WorkoutPlanSummary[]> {
+  const response = await apiClient.get<WorkoutPlanSummary[]>(MY_PLANS_URL);
   return response.data;
 }

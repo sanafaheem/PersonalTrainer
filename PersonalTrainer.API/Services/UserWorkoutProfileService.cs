@@ -18,16 +18,34 @@ public class UserWorkoutProfileService(AppDbContext db) : IUserWorkoutProfileSer
 
     public async Task<UserWorkoutProfileResponse> SaveAsync(UserWorkoutProfileRequest request)
     {
+        var existing = await db.UserWorkoutProfiles
+            .FirstOrDefaultAsync(p => p.UserId == request.UserId);
+
+        if (existing is not null)
+        {
+            existing.FirstName        = request.FirstName;
+            existing.Age              = request.Age;
+            existing.FitnessLevel     = Enum.Parse<FitnessLevel>(request.FitnessLevel);
+            existing.Goal             = Enum.Parse<WorkoutGoal>(request.Goal);
+            existing.FocusArea        = Enum.Parse<FocusArea>(request.FocusArea);
+            existing.DurationMinutes  = request.DurationMinutes;
+            existing.Equipment        = [..request.Equipment.Select(Enum.Parse<Equipment>)];
+            existing.HealthLimitations = request.HealthLimitations;
+
+            await db.SaveChangesAsync();
+            return ToResponse(existing);
+        }
+
         var profile = new UserWorkoutProfile
         {
-            UserId           = request.UserId,
-            FirstName        = request.FirstName,
-            Age              = request.Age,
-            FitnessLevel     = Enum.Parse<FitnessLevel>(request.FitnessLevel),
-            Goal             = Enum.Parse<WorkoutGoal>(request.Goal),
-            FocusArea        = Enum.Parse<FocusArea>(request.FocusArea),
-            DurationMinutes  = request.DurationMinutes,
-            Equipment        = [..request.Equipment.Select(Enum.Parse<Equipment>)],
+            UserId            = request.UserId,
+            FirstName         = request.FirstName,
+            Age               = request.Age,
+            FitnessLevel      = Enum.Parse<FitnessLevel>(request.FitnessLevel),
+            Goal              = Enum.Parse<WorkoutGoal>(request.Goal),
+            FocusArea         = Enum.Parse<FocusArea>(request.FocusArea),
+            DurationMinutes   = request.DurationMinutes,
+            Equipment         = [..request.Equipment.Select(Enum.Parse<Equipment>)],
             HealthLimitations = request.HealthLimitations
         };
 
