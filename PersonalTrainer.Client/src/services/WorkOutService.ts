@@ -1,4 +1,4 @@
-import { apiClient, GENERATE_WORKOUT_URL, MY_PLANS_URL } from './ApiConfig';
+import { apiClient, GENERATE_WORKOUT_URL, MY_PLANS_URL, PLANS_URL } from './ApiConfig';
 
 export interface GenerateWorkoutRequest {
   firstName: string;
@@ -47,5 +47,10 @@ export async function generateWorkout(request: GenerateWorkoutRequest): Promise<
 
 export async function getMyPlans(): Promise<WorkoutPlanSummary[]> {
   const response = await apiClient.get<WorkoutPlanSummary[]>(MY_PLANS_URL);
+  return response.data;
+}
+
+export async function getPlanById(id: number): Promise<WorkoutPlan> {
+  const response = await apiClient.get<WorkoutPlan>(`${PLANS_URL}/${id}`);
   return response.data;
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstrap';
-import { getMyPlans } from '../services/WorkOutService';
+import { getMyPlans, getPlanById } from '../services/WorkOutService';
 import type { WorkoutPlanSummary } from '../services/WorkOutService';
 
 export default function MyWorkoutsPage() {
@@ -9,6 +9,18 @@ export default function MyWorkoutsPage() {
   const [plans, setPlans] = useState<WorkoutPlanSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [starting, setStarting] = useState<number | null>(null);
+
+  const handleStartWorkout = async (id: number) => {
+    setStarting(id);
+    try {
+      const plan = await getPlanById(id);
+      sessionStorage.setItem('workoutPlan', JSON.stringify(plan));
+      navigate('/workout/plan');
+    } finally {
+      setStarting(null);
+    }
+  };
 
   useEffect(() => {
     getMyPlans()
@@ -65,8 +77,13 @@ export default function MyWorkoutsPage() {
                 </div>
 
                 <div className="mt-auto">
-                  <Button variant="dark" className="w-100">
-                    Start Workout
+                  <Button
+                    variant="dark"
+                    className="w-100"
+                    disabled={starting === plan.id}
+                    onClick={() => handleStartWorkout(plan.id)}
+                  >
+                    {starting === plan.id ? 'Loading...' : 'Start Workout'}
                   </Button>
                 </div>
               </Card.Body>
