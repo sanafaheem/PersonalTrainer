@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link} from 'react-router-dom';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { login } from '../services/authService';
@@ -92,7 +92,7 @@ export default function LoginPage(){
 
           <p className="text-center text-muted mt-3 mb-0">
             Don't have an account?{' '}
-            <a href="/register" className="text-success">Register</a>
+            <Link to="/register" className="text-success">Register</Link>
           </p>
         </Card.Body>
       </Card>

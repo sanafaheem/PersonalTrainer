@@ -7,6 +7,7 @@ import CreateWorkoutPage from './pages/CreateWorkoutPage';
 import WorkoutPlanPage from './pages/WorkoutPlanPage';
 import SessionPage from './pages/SessionPage';
 import MyWorkoutsPage from './pages/MyWorkoutsPage';
+import RegisterPage from './pages/RegisterPage'
 
 import type React from 'react';
 import { useAuth } from './context/AuthContext';
@@ -21,9 +22,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
         <Route element={<Layout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<ProtectedRoute><ProfilePage/></ProtectedRoute>}/>
           <Route path="/workout" element={<CreateWorkoutPage/>}/>
           <Route path="/workout/plan" element={<WorkoutPlanPage/>}/>
