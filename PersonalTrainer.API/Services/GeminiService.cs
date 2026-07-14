@@ -104,6 +104,7 @@ public class GeminiService(HttpClient httpClient, IConfiguration config, ILogger
         - Respect any health limitations
         """;
 
+
     // Gemini API request/response shapes
     private record GeminiRequest
     {
