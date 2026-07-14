@@ -37,6 +37,9 @@ public enum MuscleGroup
     [Display(Name = "Calves")]
     Calves,
 
+    [Display(Name = "Obliques")]
+    Obliques,
+
     [Display(Name = "Full Body")]
     FullBody
 }
