@@ -17,6 +17,10 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<UserWorkoutProfile> UserWorkoutProfiles { get; set; }
     public DbSet<WorkoutPlan> WorkoutPlans { get; set; }
     public DbSet<Exercise> Exercises { get; set; }
+    public DbSet<ExerciseTemplate> ExerciseTemplates => Set<ExerciseTemplate>();
+    public DbSet<ExerciseEquipment> ExerciseEquipment => Set<ExerciseEquipment>();
+    public DbSet<ExerciseMuscleGroup> ExerciseMuscleGroups => Set<ExerciseMuscleGroup>();
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -34,5 +38,23 @@ public class AppDbContext : IdentityDbContext<AppUser>
                 v => v.Aggregate(0, (a, e) => HashCode.Combine(a, e.GetHashCode())),
                 v => v.ToList()
             ));
+
+        builder.Entity<ExerciseEquipment>(entity =>
+        {
+            entity.ToTable("ExerciseEquipment");
+
+            entity.HasOne(e => e.ExerciseTemplate)
+                .WithMany(ex => ex.Equipment)
+                .HasForeignKey(e => e.ExerciseTemplateId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        builder.Entity<ExerciseMuscleGroup>(entity =>
+        {
+        entity.ToTable("ExerciseMuscleGroups");
+        entity.HasOne(e => e.ExerciseTemplate)
+              .WithMany(ex => ex.MuscleGroups)
+              .HasForeignKey(e => e.ExerciseTemplateId)
+              .OnDelete(DeleteBehavior.Cascade);
+         });
     }
 }
