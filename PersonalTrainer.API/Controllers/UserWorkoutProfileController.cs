@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PersonalTrainer.API.Models.DTO;
 using PersonalTrainer.API.Services;
+using PersonalTrainer.API.Services.AI;
 
 namespace PersonalTrainer.API.Controllers;
 
@@ -9,7 +10,8 @@ namespace PersonalTrainer.API.Controllers;
 public class UserWorkoutProfileController(
     IUserWorkoutProfileService profileService,
     ICurrentUserService currentUser,
-    IWorkoutAIService workoutAI,
+    // IWorkoutAIService workoutAI,
+    IWorkoutGenerationAgent workoutAI,
     IWorkoutPlanService workoutPlanService,
     ILogger<UserWorkoutProfileController> logger) : ControllerBase
 {
@@ -64,7 +66,7 @@ public class UserWorkoutProfileController(
 
         try
         {
-            var plan = await workoutAI.GenerateWorkoutPlanAsync(request);
+            var plan = await workoutAI.GenerateAsync(request);
 
             if (profileId.HasValue)
                 return Ok(await workoutPlanService.SaveAsync(plan, profileId.Value));
