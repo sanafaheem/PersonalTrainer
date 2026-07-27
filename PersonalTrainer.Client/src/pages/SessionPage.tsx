@@ -147,7 +147,7 @@ useEffect(() => {
                   </div>
 
           <div className="d-flex gap-2 flex-wrap mb-3">
-            <Badge bg="dark">{ex.durationSeconds}s</Badge>
+            {ex.durationSeconds ? <Badge bg="dark">{ex.durationSeconds}s</Badge> : null}
             {ex.sets && ex.reps && (
               <Badge bg="dark">{ex.sets} sets × {ex.reps} reps</Badge>
             )}

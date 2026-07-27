@@ -7,6 +7,7 @@ using PersonalTrainer.API.Data;
 using PersonalTrainer.API.Middleware;
 using PersonalTrainer.API.Models;
 using PersonalTrainer.API.Services;
+using PersonalTrainer.API.Services.AI;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserWorkoutProfileService, UserWorkoutProfileService>();
 builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
 builder.Services.AddScoped<IExerciseQueryService, ExerciseQueryService>();
+builder.Services.AddHttpClient<IWorkoutGenerationAgent, WorkoutGenerationAgent>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
