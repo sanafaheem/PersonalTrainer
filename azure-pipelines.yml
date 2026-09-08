@@ -1,0 +1,75 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+
+- stage: DeployAPI
+  displayName: 'Build and Deploy API'
+  jobs:
+  - job: BuildAndDeployAPI
+    displayName: 'Build and Deploy .NET API'
+    steps:
+
+    - task: UseDotNet@2
+      displayName: 'Use .NET 9'
+      inputs:
+        packageType: 'sdk'
+        version: '9.x'
+
+    - script: dotnet restore
+      displayName: 'Restore packages'
+      workingDirectory: 'PersonalTrainer.API'
+
+    - script: dotnet build --configuration Release
+      displayName: 'Build'
+      workingDirectory: 'PersonalTrainer.API'
+
+    - script: dotnet publish --configuration Release --output $(Build.ArtifactStagingDirectory)/api
+      displayName: 'Publish'
+      workingDirectory: 'PersonalTrainer.API'
+
+    - task: AzureWebApp@1
+      displayName: 'Deploy to Azure App Service'
+      inputs:
+        azureSubscription: 'AzureServiceConnection'
+        appType: 'webAppLinux'
+        appName: 'personaltrainer-api'
+        package: '$(Build.ArtifactStagingDirectory)/api'
+
+- stage: DeployFrontend
+  displayName: 'Build and Deploy Frontend'
+  dependsOn: DeployAPI
+  jobs:
+  - job: BuildAndDeployFrontend
+    displayName: 'Build and Deploy React App'
+    steps:
+
+    - task: NodeTool@0
+      displayName: 'Use Node.js'
+      inputs:
+        versionSpec: '18.x'
+
+    - script: npm install
+      displayName: 'Install dependencies'
+      workingDirectory: 'PersonalTrainer.Client'
+
+    - script: npm run build
+      displayName: 'Build React app'
+      workingDirectory: 'PersonalTrainer.Client'
+      env:
+        VITE_API_URL: 'https://personaltrainer-api.azurewebsites.net/api'
+
+    - task: AzureStaticWebApp@0
+      displayName: 'Deploy to Azure Static Web Apps'
+      inputs:
+        app_location: 'PersonalTrainer.Client'
+        output_location: 'dist'
+        azure_static_web_apps_api_token: '$(STATIC_WEB_APP_TOKEN)'
