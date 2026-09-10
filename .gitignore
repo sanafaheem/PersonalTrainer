@@ -4,6 +4,8 @@
 # Build output
 **/bin/
 **/obj/
+**/publish/
+*.zip
 
 # VS / Rider
 .vs/
