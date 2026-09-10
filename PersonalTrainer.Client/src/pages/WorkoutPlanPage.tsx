@@ -47,14 +47,14 @@ export default function WorkoutPlanPage() {
                     <Badge bg="light" text="dark" className="border">{ex.difficulty}</Badge>
                   </div>
                   <p className="text-muted small mt-2 mb-0">Muscles: {ex.musclesTargeted}</p>
-                  <p className="fst-italic small text-success mb-0">{ex.encouragementMessage}</p>
+                  {/* <p className="fst-italic small text-success mb-0">{ex.encouragementMessage}</p> */}
                 </div>
               </div>
             </ListGroup.Item>
           ))}
         </ListGroup>
 
-        <Card className="mb-4 border-0 bg-light">
+        {/* <Card className="mb-4 border-0 bg-light">
           <Card.Body>
             <small className="text-uppercase fw-semibold text-muted">Cool Down</small>
             <p className="mb-0 mt-1">{plan.cooldownCue}</p>
@@ -65,7 +65,7 @@ export default function WorkoutPlanPage() {
           <Card.Body className="text-center">
             <p className="fw-semibold text-success mb-0">{plan.completionMessage}</p>
           </Card.Body>
-        </Card>
+        </Card> */}
 
         {/* Desktop buttons */}
         <div className="d-none d-md-flex justify-content-between mt-4">
