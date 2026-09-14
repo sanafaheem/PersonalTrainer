@@ -136,3 +136,4 @@ dotnet ef database update --project PersonalTrainer.API
 | `Jwt:Key` | appsettings | Signing key (min 32 chars) |
 | `Gemini:ApiKey` | appsettings | Google Gemini API key |
 | `MSSQL_SA_PASSWORD` | .env | SQL Server SA password for Docker |
+test
