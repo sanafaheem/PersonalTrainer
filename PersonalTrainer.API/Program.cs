@@ -30,9 +30,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         sqlOptions => sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3,
-            maxRetryDelay: TimeSpan.FromSeconds(10),
-            errorNumbersToAdd: null
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(15),
+            errorNumbersToAdd: [-2] // explicitly add timeout error
         )
     ));
 
