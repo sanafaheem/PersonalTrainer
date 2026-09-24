@@ -24,8 +24,18 @@ export default function SessionPage() {
     const ex = exercises[currentIndex];
     if (ex) {
       setIsResting(false);
-      setTimeLeft(ex.durationSeconds);
-      if (voiceOn) voiceService.speak(`${ex.name}. ${ex.encouragementMessage}`);
+      if(!ex.sets && !ex.reps) {
+        setTimeLeft(ex.durationSeconds);
+      }
+      if (voiceOn) {
+        const announce = async () => {
+          await voiceService.speak(`${ex.name}. ${ex.encouragementMessage}`);
+          await new Promise(r => setTimeout(r, 2000));
+          await voiceService.speak(ex.instructions, { rate: 0.75 });
+        };
+        announce();
+      }
+      return () => voiceService.stop();
     }
     return () => voiceService.stop();
   }, [currentIndex]);
@@ -33,6 +43,7 @@ export default function SessionPage() {
 // Countdown only — no state changes here except timeLeft
 useEffect(() => {
   if (timeLeft <= 0) return; // let the transition useEffect handle 0
+    if (exercises[currentIndex]?.sets) return; 
   const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
   return () => clearInterval(timer);
 }, [timeLeft]);
@@ -56,7 +67,9 @@ useEffect(() => {
     if (voiceOn) voiceService.speak('Good work! Rest now.');
   } else {
     setIsResting(false);
-    handleNext();
+    if(!ex.sets) {
+         handleNext();
+    }
   }
 }, [timeLeft]);
 
@@ -128,7 +141,13 @@ useEffect(() => {
               style={{ height: '4px' }}
             />
           </div> */}
-                  <div className="text-center my-4">
+                  {ex.sets ? (
+                    <div className="text-center my-4">
+                      <div className="display-3 fw-bold">{ex.sets} × {ex.reps ?? '–'}</div>
+                      <small className="text-muted text-uppercase">sets × reps</small>
+                    </div>
+                  ) : (
+                    <div className="text-center my-4">
                       <small className="text-muted text-uppercase fw-semibold">
                           {isResting ? '😮‍💨 Rest' : 'Time Remaining'}
                       </small>
@@ -144,13 +163,14 @@ useEffect(() => {
                           className="mt-2"
                           style={{ height: '4px' }}
                       />
-                  </div>
+                    </div>
+                  )}
 
           <div className="d-flex gap-2 flex-wrap mb-3">
-            {ex.durationSeconds ? <Badge bg="dark">{ex.durationSeconds}s</Badge> : null}
-            {ex.sets && ex.reps && (
-              <Badge bg="dark">{ex.sets} sets × {ex.reps} reps</Badge>
-            )}
+            {ex.sets && ex.reps
+              ? <Badge bg="dark">{ex.sets} sets × {ex.reps} reps</Badge>
+              : <Badge bg="dark">{ex.durationSeconds}s</Badge>
+            }
             <Badge bg="secondary">Rest {ex.restSeconds}s</Badge>
             <Badge bg="light" text="dark" className="border">{ex.difficulty}</Badge>
           </div>
