@@ -1,17 +1,19 @@
 const isSupported = () => 'speechSynthesis' in window;
 
-const speak = (text: string, options?: { rate?: number; pitch?: number; volume?: number }): void => {
-  if (!isSupported()) return;
+const speak = (text: string, options?: { rate?: number; pitch?: number; volume?: number }): Promise<void> => {
+  return new Promise(resolve => {
+    if (!isSupported()) { resolve(); return; }
 
-  // Cancel anything currently being spoken before starting new speech
-  window.speechSynthesis.cancel();
+    window.speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate   = options?.rate   ?? 1;
-  utterance.pitch  = options?.pitch  ?? 1;
-  utterance.volume = options?.volume ?? 1;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate   = options?.rate   ?? 1;
+    utterance.pitch  = options?.pitch  ?? 1;
+    utterance.volume = options?.volume ?? 1;
+    utterance.onend  = () => resolve();
 
-  window.speechSynthesis.speak(utterance);
+    window.speechSynthesis.speak(utterance);
+  });
 };
 
 const stop = (): void => {

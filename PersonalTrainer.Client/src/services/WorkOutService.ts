@@ -14,7 +14,7 @@ export interface GenerateWorkoutRequest {
 export interface Exercise {
   name: string;
   instructions: string;
-  durationSeconds: number;
+  durationSeconds: number | null;
   restSeconds: number;
   sets: number | null;
   reps: number | null;
