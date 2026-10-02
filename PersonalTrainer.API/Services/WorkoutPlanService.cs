@@ -57,7 +57,7 @@ public class WorkoutPlanService(AppDbContext db) : IWorkoutPlanService
             {
                 Name                 = e.Name,
                 Instructions         = e.Instructions,
-                DurationSeconds      = e.DurationSeconds,
+                DurationSeconds      = e.DurationSeconds ?? 30,
                 RestSeconds          = e.RestSeconds     ?? 15,
                 Sets                 = e.Sets,
                 Reps                 = e.Reps,

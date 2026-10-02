@@ -25,7 +25,7 @@ export default function SessionPage() {
     if (ex) {
       setIsResting(false);
       if(!ex.sets && !ex.reps) {
-        setTimeLeft(ex.durationSeconds);
+        setTimeLeft(ex.durationSeconds ?? 30);
       }
       if (voiceOn) {
         const announce = async () => {
@@ -100,7 +100,7 @@ useEffect(() => {
 
   const ex = exercises[currentIndex];
   const exerciseProgress = Math.round((currentIndex / exercises.length) * 100);
-  const timerProgress = ex.durationSeconds > 0
+  const timerProgress = ex.durationSeconds
     ? Math.round((timeLeft / ex.durationSeconds) * 100)
     : 0;
 
