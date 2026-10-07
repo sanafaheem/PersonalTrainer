@@ -220,46 +220,22 @@ public class WorkoutGenerationAgent(
     }
 
     private static string BuildPrompt(UserWorkoutProfileRequest r) => $$"""
-    You are an expert personal trainer. Your job is to create a personalised workout plan.
+    You are an expert personal trainer. Create a personalised workout plan.
 
-    User profile:
-    - Name: {{r.FirstName}}
-    - Age: {{r.Age}}
-    - Fitness level: {{r.FitnessLevel}}
-    - Goal: {{r.Goal}}
-    - Focus area: {{r.FocusArea}}
-    - Session duration: {{r.DurationMinutes}} minutes
-    - Available equipment: {{string.Join(", ", r.Equipment)}}
-    - Health limitations: {{r.HealthLimitations ?? "none"}}
+    User: {{r.FirstName}}, age {{r.Age}}, {{r.FitnessLevel}} level, goal: {{r.Goal}}, focus: {{r.FocusArea}}, duration: {{r.DurationMinutes}} mins, equipment: {{string.Join(", ", r.Equipment)}}, limitations: {{r.HealthLimitations ?? "none"}}
 
     Instructions:
-    1. FIRST call get_exercises to retrieve exercises from the database
-    2. Select appropriate exercises based on the user's goal, fitness level and health limitations
-    3. Avoid exercises where contraindications match the user's health limitations
-    4. Scale duration, sets and reps within the min/max ranges based on fitness level and age
-    5. Beginner → closer to min ranges, Advanced → closer to max ranges
-    6. Make sure total workout fits within {{r.DurationMinutes}} minutes
-    7. Return ONLY a JSON object — no markdown, no explanation:
+    1. Call get_exercises first — never invent exercises
+    2. Avoid exercises whose contraindications match the user's limitations
+    3. Scale to fitness level: beginner → lower end of ranges, advanced → upper end
+    4. Exercise types:
+       - Rep-based (e.g. squats, push-ups): set sets and reps, set durationSeconds to total exercise time (sets × avg rep time + rest between sets)
+       - Timed (e.g. plank, wall sit): set sets, leave reps null, set durationSeconds to total time (sets × hold duration + rest between sets)
+       - Cardio/flow (e.g. jumping jacks): leave sets and reps null, set durationSeconds to total duration
+    5. durationSeconds must always be the TOTAL time for the exercise including all sets and rest — never per-set duration
+    6. Total of all exercise durationSeconds must fit within {{r.DurationMinutes}} minutes
+    7. Return ONLY raw JSON — no markdown, no explanation:
 
-    {
-      "title": "string",
-      "motivationalIntro": "string — personalised with user name",
-      "warmupCue": "string",
-      "cooldownCue": "string",
-      "completionMessage": "string — personalised with user name",
-      "exercises": [
-        {
-          "name": "string",
-          "instructions": "string",
-          "durationSeconds": number,
-          "restSeconds": number,
-          "sets": number or null,
-          "reps": number or null,
-          "musclesTargeted": "string",
-          "difficulty": "string",
-          "encouragementMessage": "string — personalised with user name"
-        }
-      ]
-    }
+    {"title":"string","motivationalIntro":"string personalised with user name","warmupCue":"string","cooldownCue":"string","completionMessage":"string personalised with user name","exercises":[{"name":"string","instructions":"string","durationSeconds":number,"restSeconds":number,"sets":number|null,"reps":number|null,"musclesTargeted":"string","difficulty":"string","encouragementMessage":"string personalised with user name"}]}
     """;
 }

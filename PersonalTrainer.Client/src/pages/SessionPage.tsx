@@ -24,7 +24,7 @@ export default function SessionPage() {
     const ex = exercises[currentIndex];
     if (ex) {
       setIsResting(false);
-      if(!ex.sets && !ex.reps) {
+      if(!(ex.sets && ex.reps)) {
         setTimeLeft(ex.durationSeconds ?? 30);
       }
       if (voiceOn) {
@@ -43,11 +43,16 @@ export default function SessionPage() {
 // Countdown only — no state changes here except timeLeft
 useEffect(() => {
   if (timeLeft <= 0) return; // let the transition useEffect handle 0
-    if (exercises[currentIndex]?.sets) return; 
+    if (exercises[currentIndex]?.sets && exercises[currentIndex]?.reps) return;
   const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
   return () => clearInterval(timer);
 }, [timeLeft]);
-
+//second formatting function 
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins<10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
 // Handle timer hitting 0 — separate from countdown
 useEffect(() => {
   if (timeLeft !== 0) {
@@ -67,8 +72,8 @@ useEffect(() => {
     if (voiceOn) voiceService.speak('Good work! Rest now.');
   } else {
     setIsResting(false);
-    if(!ex.sets) {
-         handleNext();
+    if(!(ex.sets && ex.reps)) {
+      handleNext();
     }
   }
 }, [timeLeft]);
@@ -141,9 +146,9 @@ useEffect(() => {
               style={{ height: '4px' }}
             />
           </div> */}
-                  {ex.sets ? (
+                  {ex.sets && ex.reps ? (
                     <div className="text-center my-4">
-                      <div className="display-3 fw-bold">{ex.sets} × {ex.reps ?? '–'}</div>
+                      <div className="display-3 fw-bold">{ex.sets} × {ex.reps}</div>
                       <small className="text-muted text-uppercase">sets × reps</small>
                     </div>
                   ) : (
@@ -152,7 +157,7 @@ useEffect(() => {
                           {isResting ? '😮‍💨 Rest' : 'Time Remaining'}
                       </small>
                       <div className={`display-3 fw-bold ${isResting ? 'text-secondary' : 'text-dark'}`}>
-                          {timeLeft}
+                          {formatTime(timeLeft)}
                       </div>
                       <small className="text-muted text-uppercase">seconds</small>
                       <ProgressBar

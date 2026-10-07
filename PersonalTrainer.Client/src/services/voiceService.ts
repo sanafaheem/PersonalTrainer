@@ -5,6 +5,7 @@ const speak = (text: string, options?: { rate?: number; pitch?: number; volume?:
     if (!isSupported()) { resolve(); return; }
 
     window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate   = options?.rate   ?? 1;
