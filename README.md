@@ -1,6 +1,9 @@
 # Personal Trainer
 
 An AI-powered personal training app that generates personalised workout plans based on your fitness profile. Powered by Google Gemini with function calling, backed by a real exercise database.
+## Live Demo
+🌐 [myaitrainer.online](https://myaitrainer.online)
+
 
 ## Tech Stack
 
